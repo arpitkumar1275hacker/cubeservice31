@@ -523,6 +523,149 @@ input, select, textarea{
     margin-top:-23px;
     
 }
+
+
+
+
+/* ===== FORCE SINGLE LINE HEADER (FINAL FIX) ===== */
+
+.navbar {
+    flex-wrap: nowrap !important;   /* NEVER BREAK */
+    overflow-x: auto;               /* scroll if needed */
+    white-space: nowrap;
+}
+
+/* keep menu in line */
+.header-menu {
+    width: auto !important;         /* REMOVE 100% width effect */
+    margin-top: 0 !important;       /* REMOVE push down */
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
+}
+
+/* keep right section inline */
+.header-right {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
+}
+
+/* prevent text breaking */
+.menu-link,
+.logo,
+.username {
+    white-space: nowrap;
+}
+
+/* MOBILE FIX */
+@media (max-width:768px) {
+    .navbar {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+    }
+
+    .header-menu {
+        width: auto !important;
+        margin-top: 0 !important;
+    }
+}
+
+
+/* ===== TOP HEADER ===== */
+.top-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+}
+
+/* LOGO */
+.logo {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* RIGHT */
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 2000;
+}
+
+.bottom-nav a {
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+}
+
+.bottom-nav span {
+    font-size: 20px;
+    display: block;
+}
+
+.bottom-nav a:hover {
+    color: #6a00ff;
+}
+
+/* CART */
+.cart {
+    position: relative;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 50%;
+}
+
+/* BODY SPACE FIX */
+body {
+    padding-top: 60px;
+    padding-bottom: 60px; /* for bottom nav */
+}
+
+/* USER INFO */
+.top-right div span {
+    line-height: 1.2;
+}
+
+/* SIDEBAR FIX */
+.sidebar {
+    z-index: 4000;
+}
+
+.sidebar-overlay {
+    z-index: 3999;
+}
 </style>
 </head>
 
@@ -530,101 +673,84 @@ input, select, textarea{
   
 
 <!-- HEADER -->
-<header>
-    <div class="navbar">
-      <!-- LOGO --><div class="menu-toggle" onclick="toggleSidebar()">
-            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828859.png" width="25px">
-        </div>
-    
-      <div class="logoou"><img src="{% static 'images/cube.png' %}"></div>
-   
-        <div class="logo"> <span>Cube<span style="color:#4f46e5;">Services</span></span></div>
+<header class="top-header">
+    <div class="top-bar">
 
-        <div class="location">
-            {% if user.is_authenticated %}
-            <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png">
-            <span>{{ user.userprofile.district }}</span>
-             {% endif %}
-        </div>
-<nav class="header-menu">
-   <a href="{% url 'users:home' %}" class="menu-link">
-    <i class="fa-solid fa-house"></i> Home
-  </a>
+        <!-- LEFT -->
+        <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
 
-  <a href="{% url 'users:contact' %}" class="menu-link">
-    <i class="fa-solid fa-headset"></i> Contact
-  </a>
-
-  <a href="{% url 'users:my_orders' %}" class="menu-link">
-    <i class="fa-solid fa-box"></i> My Orders
-  </a>
-
-  <span class="menu-link repair-btn" onclick="toggleRepairPanel()">
-   <i class="fa-solid fa-screwdriver-wrench"></i>Repair Service
-  </span>
-  </nav>
-       <div class="header-right">
-        
-  {% if user.is_authenticated %}
-    <a href="{% url 'users:logout' %}" class="menu-link logout">🚪 Logout</a>
-  {% endif %}
-
-        
-      {% if user.is_authenticated %}
-            <div class="user-profile">
-      <a href="{%url 'users:user_profile'%}">
-    <i class="fa-solid fa-user"></i>
-</a>
-
-       
-    <span class="username">Hello, {{ user.userprofile.fullname|default:user.username }}</span>
-</div>
-{% else %}
-
-
-            <div class="auth-buttons">
-              <a href="{% url 'users:user_login' %}"><button class="login" style="background-color: #6a00ff; color:white;">Login</button></a>
-              
-            </div>
-       {% endif %}
-
-            <div class="cart">
-  <a href="{% url 'users:cart' %}">
-    <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png">
-  </a>
-
-  {% if cart_count > 0 %}
-    <span class="cart-count">{{ cart_count }}</span>
-  {% endif %}
+        <!-- LOGO -->
+        <div class="logo" style="display:flex; align-items:center; gap:8px;">
+    <img src="{% static 'images/cube.png' %}" 
+         style="height:35px; width:35px; border-radius:50%;">
+    <span>Cube<span style="color:#4f46e5;">Services</span></span>
 </div>
 
-              </div>
+        <!-- RIGHT -->
+        <div class="top-right">
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    {% if user.is_authenticated %}
+        
+        <!-- USER INFO -->
+        <div style="display:flex; flex-direction:column; font-size:12px;">
+            <span style="font-weight:600;">
+                {{ user.userprofile.fullname|default:user.username }}
+            </span>
+
+            <span style="color:#666;">
+                📍 {{ user.userprofile.district }}
+            </span>
+        </div>
+
+        <!-- PROFILE ICON -->
+        <a href="{% url 'users:user_profile' %}">👤</a>
+
+        <!-- LOGOUT -->
+        <a href="{% url 'users:logout' %}">Logout</a>
+
+    {% else %}
+        <a href="{% url 'users:user_login' %}">Login</a>
+    {% endif %}
+
+    <!-- CART -->
+    <a href="{% url 'users:cart' %}" class="cart">
+        🛒
+        {% if cart_count > 0 %}
+            <span class="cart-count">{{ cart_count }}</span>
+        {% endif %}
+    </a>
+
+</div>
+
+           
+
+        </div>
+    </div>
+</header>
+
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>Menu</h3>
         <span class="close-sidebar" onclick="toggleSidebar()">✕</span>
     </div>
+
     <ul class="sidebar-links">
-        <li><a href="/">Home</a></li>
+        <li><a href="{% url 'users:home' %}">Home</a></li>
         <li><a href="{% url 'users:all_services' %}">All Services</a></li>
-       
-       
-         <li><a href="{% url 'users:admin_login' %}">Admin Login</a></li>
-         <li><a href="{% url 'users:adminreg' %}">Admin Register</a></li>
-          <li><a href="{% url 'users:login_servicecenter' %}">Service center Login</a></li>
-             <li><a href="{% url 'users:contact' %}">Contact</a></li>
-              <li><a href="{% url 'users:about_us' %}">About</a></li>
-               <li><a href="{% url 'users:policy' %}">Policy</a></li>
-        
+        <li><a href="{% url 'users:contact' %}">Contact</a></li>
+        <li><a href="{% url 'users:about_us' %}">About</a></li>
+        <li><a href="{% url 'users:adminreg' %}">Admin Register</a></li>
+        <li><a href="{% url 'users:admin_login' %}">Admin Login</a></li>
+        <li><a href="{% url 'users:login_servicecenter' %}">login servicecenter</a></li>
         {% if user.is_authenticated %}
-            <li><a href="{% url 'users:logout' %}" style="color: black;">Logout</a></li>
+        <li><a href="{% url 'users:logout' %}">Logout</a></li>
         {% endif %}
     </ul>
 </div>
-    </div>
-</header>
+
 
 <!-- ===== REPAIR SERVICES PANEL ===== -->
 <div class="repair-overlay" id="repairOverlay" onclick="toggleRepairPanel()"></div>
@@ -683,7 +809,29 @@ input, select, textarea{
 
 
 
+<div class="bottom-nav">
 
+    <a href="{% url 'users:home' %}">
+        <span>🏠</span>
+        <p>Home</p>
+    </a>
+
+    <a href="{% url 'users:my_orders' %}">
+        <span>📦</span>
+        <p>Orders</p>
+    </a>
+
+    <a href="#" onclick="toggleRepairPanel()">
+        <span>🛠</span>
+        <p>Repair</p>
+    </a>
+
+    <a href="{% url 'users:contact' %}">
+        <span>📞</span>
+        <p>Contact</p>
+    </a>
+
+</div>
 
 
 <!-- ================= MODAL ================= -->
